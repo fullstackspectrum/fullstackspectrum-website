@@ -1,0 +1,24 @@
+# GoDaddy (Apache) config for fullstackspectrum.com
+ErrorDocument 404 /404.html
+
+# Force HTTPS and strip www
+RewriteEngine On
+RewriteCond %{HTTPS} off [OR]
+RewriteCond %{HTTP_HOST} ^www\. [NC]
+RewriteRule ^ https://fullstackspectrum.com%{REQUEST_URI} [L,R=301]
+
+# Don't serve the post template publicly
+RewriteRule ^blog/_template\.html$ - [R=404,L]
+
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 7 days"
+  ExpiresByType application/javascript "access plus 7 days"
+  ExpiresByType image/svg+xml "access plus 30 days"
+  ExpiresByType image/png "access plus 30 days"
+  ExpiresByType text/html "access plus 0 seconds"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml
+</IfModule>
