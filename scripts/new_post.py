@@ -1,13 +1,5 @@
 #!/usr/bin/env python3
-"""Start a new blog post from blog/_template.html.
-
-Usage:
-  python3 scripts/new_post.py my-new-post "My new post"
-
-Creates blog/my-new-post.html with the title, slug and today's date filled in.
-You still write the description and the body. The post is listed automatically
-once it's merged into main (see scripts/build_posts.py).
-"""
+"""Usage: python3 scripts/new_post.py <slug> '<title>'"""
 import html
 import re
 import sys
@@ -38,7 +30,6 @@ def main():
     target.write_text(content, encoding="utf-8")
 
     print(f"Created {target.relative_to(ROOT)}")
-    print("Next: write the <meta name=\"description\"> (it's the excerpt), the body, and the read time.")
 
 
 if __name__ == "__main__":
