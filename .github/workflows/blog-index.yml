@@ -1,0 +1,60 @@
+name: Update blog index
+
+# Rebuild assets/js/posts.js from blog/*.html whenever blog changes land on main,
+# and commit it back so the homepage and /blog/ list the new posts.
+on:
+  push:
+    branches: [main]
+    paths:
+      - "blog/**"
+      - "scripts/build_posts.py"
+  pull_request:
+    paths:
+      - "blog/**"
+      - "scripts/build_posts.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: blog-index-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  # On PRs: fail early if a post is missing its title, date or description,
+  # and show which posts will be listed after merge.
+  preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build post index
+        run: python3 scripts/build_posts.py
+      - name: Show listed posts
+        run: |
+          {
+            echo "### Posts listed after merge"
+            echo '```js'
+            sed -n '/window.POSTS/,$p' assets/js/posts.js
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  update:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build post index
+        run: python3 scripts/build_posts.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- assets/js/posts.js; then
+            echo "No changes to posts.js"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/js/posts.js
+          git commit -m "Update blog index"
+          git push
