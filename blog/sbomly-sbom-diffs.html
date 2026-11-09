@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>What changed in this build? Introducing Sbomly — Full-Stack-Spectrum</title>
+  <meta name="description" content="Sbomly diffs two SBOMs, CycloneDX or SPDX, and flags the changes worth a reviewer's time: rebuilt artifacts, new copyleft licences and supplier changes.">
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#0a0d12">
+  <link rel="canonical" href="https://fullstackspectrum.com/blog/sbomly-sbom-diffs.html">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Full-Stack-Spectrum home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Full-Stack-Spectrum</span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5h14M2 13h14"/></svg>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="/#projects">projects</a>
+      <a href="/#about">about</a>
+      <a href="/blog/" aria-current="page">blog</a>
+      <a href="/#contact">contact</a>
+      <a class="nav-gh" href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="article">
+    <div class="wrap">
+      <a class="article-back" href="/blog/">← all posts</a>
+      <div class="spectrum spectrum--sm" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="article-meta"><time datetime="2026-11-09">09 Nov 2026</time><span>5 min read</span></div>
+      <h1>What changed in this build? Introducing Sbomly</h1>
+      <div class="article-body">
+        <p>Most teams generate an SBOM for every build now. Fewer of them read one. The file gets attached to a release, maybe uploaded somewhere for compliance, and nobody looks at it again. The more useful question is never "what's in this build?" It's "what changed since the last one, and should I care?" <a href="https://github.com/fullstackspectrum/sbomly">Sbomly</a> answers that question.</p>
+
+        <h2>Why a plain diff isn't enough</h2>
+        <p>You can diff two SBOM files with <code>diff</code>, but you'll regret it. Component order shifts between runs, generators add timestamps and serial numbers, and moving to a new base image changes the distro qualifier on every OS package. A raw diff shows hundreds of lines, and the one that matters is buried among them.</p>
+        <p>Sbomly pairs components across the two SBOMs by package URL, ignoring the version and the qualifiers that only describe the build environment. A new base image doesn't report every OS package as removed and re-added. What's left is a real list of components that were added, removed, upgraded or downgraded.</p>
+
+        <h2>The changes worth stopping for</h2>
+        <p>A version bump is usually routine. These four kinds of change usually aren't, so Sbomly lists them first:</p>
+        <ul>
+          <li><strong>Integrity:</strong> same version, different digest. The artifact was rebuilt or replaced, and you should know why.</li>
+          <li><strong>Copyleft:</strong> a new dependency, or a new licence, that brings in GPL, LGPL, AGPL or similar.</li>
+          <li><strong>Licence:</strong> a licence changed, or stopped being declared.</li>
+          <li><strong>Supplier:</strong> a package's supplier changed. In a language ecosystem, that's what an account takeover looks like.</li>
+        </ul>
+        <p>Some of these are expected, and Sbomly says so instead of raising an alarm. Distros rebuild unchanged packages for each release, so a digest change alongside a new <code>distro</code> qualifier is marked informational. The same goes for supplier changes on apk, deb and rpm packages, where the supplier is the distro maintainer and maintainers rotate.</p>
+
+        <h2>Try it</h2>
+        <p>Install it from PyPI or Homebrew, or run the container image:</p>
+<pre><code>pipx install sbomly
+brew install fullstackspectrum/sbomly/sbomly
+docker run --rm -t -v "$PWD:/data" fullstackspectrum/sbomly diff old.json new.json</code></pre>
+        <p>Then compare two SBOMs. You can also read one from stdin, straight from a generator:</p>
+<pre><code>sbomly diff old.cdx.json new.cdx.json
+syft my-image:latest -o cyclonedx-json | sbomly diff baseline.cdx.json -</code></pre>
+        <p>The terminal summary lists findings first, most serious at the top, followed by each kind of component change. If you'd rather read changes the way you read code, <code>-u</code> prints a unified diff of the two component lists, one line per component, sorted like a lockfile.</p>
+
+        <h2>Reports for wherever the review happens</h2>
+        <p>Like <a href="/blog/vulnly-offline-reports.html">Vulnly</a>, Sbomly writes a self-contained HTML report with its fonts embedded. It opens offline, and search and filters still work, so you can attach it to a CI run or a ticket. It also writes a Markdown summary sized for a PR comment, and JSON for other tools:</p>
+<pre><code>sbomly diff old.json new.json --html report.html --markdown pr.md --json diff.json</code></pre>
+        <p>Sbomly itself has no runtime dependencies. It needs Python 3.10 or later and nothing else.</p>
+
+        <h2>Gating CI</h2>
+        <p><code>--fail-on</code> turns any category into a build gate. A sensible starting point is to fail on rebuilt artifacts, new copyleft and downgrades:</p>
+<pre><code>sbomly diff main.cdx.json pr.cdx.json --fail-on hash,copyleft,downgraded</code></pre>
+        <p>On GitHub, Sbomly also ships as a composite action that writes the Markdown summary to the job page:</p>
+<pre><code>- uses: fullstackspectrum/sbomly@v0.1.0
+  with:
+    old: sbom-main.cdx.json
+    new: sbom-pr.cdx.json
+    fail-on: hash,copyleft</code></pre>
+        <blockquote>An SBOM on its own is an inventory. Two SBOMs compared side by side tell you what to review.</blockquote>
+
+        <h2>Feedback</h2>
+        <p>SBOM generators disagree on a lot of details, and real files are what improve the matching. If Sbomly reports noise it shouldn't, or misses a change it should catch, <a href="https://github.com/fullstackspectrum/sbomly/issues">open an issue</a>, ideally with the two SBOMs attached.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span data-year></span> Full-Stack-Spectrum</p>
+    <div class="footer-links">
+      <a href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">github</a>
+      <a href="/blog/">blog</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/posts.js"></script>
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
