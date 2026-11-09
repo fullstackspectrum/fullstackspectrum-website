@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Why I built Full-Stack-Spectrum — Full-Stack-Spectrum</title>
+  <meta name="description" content="Thirteen years in tech, an autism diagnosis this year, and why I build open-source tools that turn noisy data into clear answers.">
+  <meta name="theme-color" content="#0a0d12">
+  <link rel="canonical" href="https://fullstackspectrum.com/blog/why-i-built-full-stack-spectrum.html">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Full-Stack-Spectrum home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Full-Stack-Spectrum</span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5h14M2 13h14"/></svg>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="/#projects">projects</a>
+      <a href="/#about">about</a>
+      <a href="/blog/" aria-current="page">blog</a>
+      <a href="/#contact">contact</a>
+      <a class="nav-gh" href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="article">
+    <div class="wrap">
+      <a class="article-back" href="/blog/">← all posts</a>
+      <div class="spectrum spectrum--sm" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="article-meta"><time datetime="2026-11-09">09 Nov 2026</time><span>5 min read</span></div>
+      <h1>Why I built Full-Stack-Spectrum</h1>
+      <div class="article-body">
+        <p>Earlier this year, after a long and stressful process, I received an adult autism diagnosis. I've worked in tech for thirteen years, and when the diagnosis came through, a lot of things I'd never been able to explain finally made sense.</p>
+        <p>Most of this blog will be about the tools I build: vulnerability reports, security graphs, analytics. Before any of that, I want to write about the person building them, because the two turn out to be more connected than I realised.</p>
+
+        <h2>Who I am</h2>
+        <p>I've always loved fixing things. That started with building computers as a kid and led to studying computer science. But I never wanted to be a full-time developer. I love writing code, but for fun, as a hobbyist, not as the job itself.</p>
+        <p>Instead I went into tech support, and I've built a thirteen-year career on it. Within support I've covered QA and cybersecurity, working with enterprise customers on problems that rarely have an obvious answer. The common thread has always been the same: find what's broken, fix it, then improve the process so it doesn't break again.</p>
+        <p>Security got its hooks into me during my two and a half years at Lacework (now part of Fortinet), where I specialised in vulnerability management. Today I'm a Senior Technical Support Engineer at Cloudsmith, working on the software supply chain every day.</p>
+
+        <h2>Always on the outside</h2>
+        <p>Growing up, I was the shy, quiet, odd kid on the fringe, the one who never quite fit in. I didn't have words for it then. I just knew that other people seemed to be following rules nobody had explained to me.</p>
+        <p>That pattern followed me into adult life. I communicate through logic: I say what I mean, and I mean what I say. That sounds simple, but it meant my intentions were misread over and over, at work and at home. Being direct came across as blunt. Being precise came across as cold. Wanting to understand the reason behind something came across as being difficult.</p>
+
+        <h2>The cost of masking</h2>
+        <p>To get by, I did what a lot of autistic people do without knowing it has a name: I masked. I studied how other people behaved and performed a version of myself that seemed to fit, every day, all day. On the outside that looked like coping. On the inside it was exhausting.</p>
+        <p>I burned out, recovered, and burned out again. Each time, I came to the same wrong conclusion: that I was mediocre, that I was failing, that I was a flawed partner. It never occurred to me that the effort of pretending might be the problem.</p>
+        <p>Through all of it, my wife's support and patience kept me grounded. I don't think I'd have got through those cycles without her.</p>
+
+        <h2>The diagnosis</h2>
+        <p>Getting the diagnosis wasn't a setback. It was a huge relief. It validated every childhood feeling of being on the outside and explained every cycle of burnout. It also gave my wife and me a shared way of understanding each other, where before there was mostly frustration on both sides.</p>
+        <blockquote>The exhaustion came from forcing my brain to fit an environment built for a completely different communication style, not from a lack of capability or heart.</blockquote>
+        <p>The traits that made the world hard work are the same ones I'm best at. Deep focus. Logic. Directness. I'm done apologising for how my mind works.</p>
+
+        <h2>Why Full-Stack-Spectrum</h2>
+        <p>I've always built my own tools: scripts, internal apps, small utilities to fill a gap. I just never made any of them public.</p>
+        <p>What changed is AI. It's made it possible to go from an idea to a prototype to a working app far faster than I could on my own, and that opened the door. I like things to work in a very specific way, and when a paid service doesn't, I'd rather build exactly what I need than work around something that almost fits.</p>
+        <p>Security tooling has plenty of those gaps. Scanners produce thousands of lines of JSON, and every one of them flags <em>something</em>, but very few tell you what to do first. Cutting through that noise, finding the pattern and giving a direct answer is exactly the kind of problem my brain is built for.</p>
+        <p>So far that's turned into <a href="https://github.com/fullstackspectrum/sbomly">Sbomly</a>, <a href="https://github.com/fullstackspectrum/Forgely">Forgely</a>, <a href="https://github.com/fullstackspectrum/Vulnly">Vulnly</a>, <a href="https://github.com/fullstackspectrum/Assay">Assay</a> and <a href="https://github.com/fullstackspectrum/policy-insights">Policy Insights</a>. They're small, focused, open-source tools that each do one job. I use them every day. If nobody else ever does, that's fine. If they help someone else, that's a bonus. Not everything is about security, either: <a href="https://github.com/fullstackspectrum/gitpulse">GitPulse</a> tracks GitHub traffic, clones and release downloads, and keeps the history long after GitHub drops it. (The Cloudsmith-related tools are personal community projects, not official Cloudsmith products.)</p>
+        <p>As for the name, "spectrum" is a nod to autism. "Full stack" is about owning a problem end to end, the way I've always worked. Together they describe the person behind the tools as much as the tools themselves.</p>
+
+        <h2>What drives me</h2>
+        <p>Honestly, I don't know exactly where Full-Stack-Spectrum will be in a year, and I'm fine with that. What drives me is learning: picking up new skills, sharpening the ones I have, and building things that make me more capable than I was the day before.</p>
+        <p>It's also the first thing I've built entirely my way. There's no masking here, and no translating myself into a style that doesn't fit. It's just the work, done the way my brain wants to do it.</p>
+
+        <h2>What's next</h2>
+        <p>This blog is mainly about the tools: deep dives into each one, real-world triage walkthroughs, and what I learn building them. Now and then I may also write more about my own journey.</p>
+        <p>To anyone who has had to mask just to get by: you aren't broken, and you aren't mediocre. I'm stepping into this next chapter with total clarity, and if any of this sounds familiar, I'd love to hear from you. You can find me on <a href="https://github.com/fullstackspectrum">GitHub</a> and <a href="https://www.linkedin.com/in/colinmoynes/">LinkedIn</a>.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span data-year></span> Full-Stack-Spectrum</p>
+    <div class="footer-links">
+      <a href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">github</a>
+      <a href="/blog/">blog</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/posts.js"></script>
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
