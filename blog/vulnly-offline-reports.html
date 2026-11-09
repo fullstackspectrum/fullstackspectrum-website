@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>One report, any scanner — Full-Stack-Spectrum</title>
+  <meta name="description" content="Why Vulnly turns Trivy, Grype, Snyk and Cloudsmith output into a single self-contained HTML report that works fully offline.">
+  <meta name="theme-color" content="#0a0d12">
+  <link rel="canonical" href="https://fullstackspectrum.com/blog/vulnly-offline-reports.html">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Full-Stack-Spectrum home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Full-Stack-Spectrum</span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5h14M2 13h14"/></svg>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="/#projects">projects</a>
+      <a href="/#about">about</a>
+      <a href="/blog/" aria-current="page">blog</a>
+      <a href="/#contact">contact</a>
+      <a class="nav-gh" href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="article">
+    <div class="wrap">
+      <a class="article-back" href="/blog/">← all posts</a>
+      <div class="spectrum spectrum--sm" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="article-meta"><time datetime="2026-11-04">04 Nov 2026</time><span>5 min read</span></div>
+      <h1>One report, any scanner: why Vulnly ships a single HTML file</h1>
+      <div class="article-body">
+        <p>You run a scanner against an image and get back a few thousand lines of JSON. Someone needs to make a call on it: the release manager, the auditor, the team lead who owns the service. That person usually isn't going to read raw JSON, and they shouldn't have to. <a href="https://github.com/fullstackspectrum/Vulnly">Vulnly</a> exists to close that gap. It takes scanner output and turns it into one HTML file that anyone can open.</p>
+
+        <h2>The problem with scanner output</h2>
+        <p>Trivy, Grype, Snyk and Cloudsmith all find vulnerabilities, but each one describes them differently. Severities sit under different keys, fix versions are nested in different places, and package identity is shaped differently each time. If you use more than one scanner, or switch between them, every dashboard or script you build ends up tied to a single format.</p>
+        <p>The usual fixes have their own costs. A hosted dashboard means another service to run and another place your vulnerability data lives. A spreadsheet export loses the context. A screenshot in a ticket goes out of date the moment someone asks a follow-up question.</p>
+
+        <h2>One file, no network</h2>
+        <p>The main design decision behind Vulnly is that the report is a single, self-contained HTML file. The fonts, the charting library and the logo are all embedded. Nothing comes from a CDN, and opening the report makes no outbound requests.</p>
+        <p>That turned out to matter more than I expected:</p>
+        <ul>
+          <li><strong>It works on airgapped hosts.</strong> Generate it in the restricted environment and open it there.</li>
+          <li><strong>It archives cleanly.</strong> Attach it to a release, a ticket or an audit folder, and it will still render in two years because there's nothing external to break.</li>
+          <li><strong>It's easy to share.</strong> It's a file, so you can email it, upload it as a CI artifact or drop it in Slack.</li>
+        </ul>
+        <p>Vulnly itself follows the same idea. It has zero dependencies outside the Python standard library, so installing it doesn't pull in a tree of packages that you'd then need to scan.</p>
+
+        <h2>From scan to report in one line</h2>
+        <p>Install it from PyPI or Homebrew:</p>
+<pre><code>pip install vulnly
+brew install fullstackspectrum/vulnly/vulnly</code></pre>
+        <p>Then pipe any supported scanner straight in. Vulnly reads from stdin with <code>-</code> and detects the input format automatically:</p>
+<pre><code>trivy image -f json nginx:latest | vulnly -
+grype nginx:latest -o json | vulnly -
+snyk container test nginx:latest --json | vulnly -</code></pre>
+        <p>If you want to be strict, for example in CI, pass <code>--source</code>. If the input doesn't match the source you named, Vulnly exits with a clear error instead of producing a misleading report:</p>
+<pre><code>vulnly scan.json --source trivy -o reports/nginx.html</code></pre>
+
+        <h2>What's in the report</h2>
+        <p>The top of the report answers "how bad is it?" It shows severity counts, how many findings have a fix available, a distribution chart, and a short executive summary. The summary's alert tells you whether something is actually urgent, routine, or whether the scan came back clean. Those are three different conversations, and the report should say which one you're having.</p>
+        <p>Next is a <strong>top affected packages</strong> breakdown. In most scans, one or two dependencies account for most of the findings. Showing that early often points to the single upgrade that clears most of the list.</p>
+        <p>After that comes the full findings table, with search, severity filters, a fixable-only toggle, sortable columns and CSV export of whatever view you've filtered to. CVE and GHSA IDs link to NVD and GitHub Advisories.</p>
+        <blockquote>The goal isn't to show every field the scanner returned. It's to help the reader decide what to fix first.</blockquote>
+
+        <h2>Cloudsmith users</h2>
+        <p>If your packages live in Cloudsmith, Vulnly reads both the CLI's scan output and the v2 OSV vulnerabilities API. It also recognises repository-level summaries and turns them into an overview report covering every package in a repo:</p>
+<pre><code>cloudsmith vulnerabilities WORKSPACE/REPO/PACKAGE --output-format json | vulnly -</code></pre>
+        <p>As with all the Cloudsmith tooling here, this is a community project and isn't affiliated with Cloudsmith.</p>
+
+        <h2>Try it</h2>
+        <p>Point it at an image you shipped this week and see what the report says. If your scanner's output doesn't parse, or you want a format I haven't covered, <a href="https://github.com/fullstackspectrum/Vulnly/issues">open an issue</a>. Real-world JSON is what makes the parsers better.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span data-year></span> Full-Stack-Spectrum</p>
+    <div class="footer-links">
+      <a href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">github</a>
+      <a href="/blog/">blog</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/posts.js"></script>
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
