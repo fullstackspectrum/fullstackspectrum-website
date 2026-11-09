@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Full-Stack-Spectrum — Open-source security &amp; developer tooling</title>
-  <meta name="description" content="Full-Stack-Spectrum builds open-source security and developer tooling: GitPulse, Forgely, Vulnly, Assay and Policy Insights.">
+  <meta name="description" content="Full-Stack-Spectrum builds open-source security and developer tooling: Sbomly, GitPulse, Forgely, Vulnly, Assay and Policy Insights.">
   <meta name="theme-color" content="#0a0d12">
   <link rel="canonical" href="https://fullstackspectrum.com/">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
@@ -100,8 +100,8 @@
 
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track">
-      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
-      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
+      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>SBOM diffs</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
+      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>SBOM diffs</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
     </div>
   </div>
 
@@ -124,9 +124,21 @@
 
       <div class="projects">
 
-        <article class="card card--featured reveal" style="--accent: var(--red)" data-tags="analytics" data-repo="gitpulse">
+        <article class="card card--featured reveal" style="--accent: var(--red)" data-tags="security" data-repo="sbomly">
           <div class="card-top">
-            <div class="card-tags"><span class="tag tag--new">NEW</span><span class="tag">Python</span></div>
+            <div class="card-tags"><span class="tag tag--new">NEW</span><span class="tag">Python</span><span class="tag">zero deps</span></div>
+            <span class="stars" data-stars></span>
+          </div>
+          <h3><a href="https://github.com/fullstackspectrum/sbomly" target="_blank" rel="noopener">Sbomly</a></h3>
+          <p class="card-kicker">SBOM diffs</p>
+          <p class="card-desc">Diff two SBOMs (CycloneDX or SPDX) and flag what deserves review: integrity, copyleft, licence and supplier changes. Terminal, PR comment, JSON and offline HTML output, with a fail-on switch to gate CI.</p>
+          <div class="install"><span class="prompt">$</span><code>pipx install sbomly</code><button class="copy" type="button">copy</button></div>
+          <div class="card-links"><a href="https://github.com/fullstackspectrum/sbomly" target="_blank" rel="noopener">source ↗</a><a href="https://pypi.org/project/sbomly/" target="_blank" rel="noopener">pypi ↗</a><a href="https://hub.docker.com/r/fullstackspectrum/sbomly" target="_blank" rel="noopener">docker hub ↗</a></div>
+        </article>
+
+        <article class="card reveal" style="--accent: var(--red)" data-tags="analytics" data-repo="gitpulse">
+          <div class="card-top">
+            <div class="card-tags"><span class="tag">Python</span></div>
             <span class="stars" data-stars></span>
           </div>
           <h3><a href="https://github.com/fullstackspectrum/gitpulse" target="_blank" rel="noopener">GitPulse</a></h3>
