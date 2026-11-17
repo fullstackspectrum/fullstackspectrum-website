@@ -40,6 +40,22 @@
     });
   });
 
+  // Project card accents: the spectrum, shuffled on each visit and dealt out
+  // in that order. Cycling one shuffled order keeps neighbours apart (beside
+  // and below, in a three-column grid) and red to at most two cards.
+  var accents = ["var(--blue)", "var(--blue-soft)", "var(--yellow)", "var(--orange)", "var(--red)"];
+  for (var i = accents.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var swap = accents[i]; accents[i] = accents[j]; accents[j] = swap;
+  }
+  var paintCards = function () {
+    var n = 0;
+    document.querySelectorAll(".projects .card").forEach(function (card) {
+      if (!card.hidden) card.style.setProperty("--accent", accents[n++ % accents.length]);
+    });
+  };
+  paintCards();
+
   // Project filters
   var filters = document.querySelectorAll(".filter");
   filters.forEach(function (f) {
@@ -50,6 +66,7 @@
         var tags = (card.dataset.tags || "").split(" ");
         card.hidden = want !== "all" && tags.indexOf(want) === -1;
       });
+      paintCards();
     });
   });
 

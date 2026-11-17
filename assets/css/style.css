@@ -226,7 +226,7 @@ code, pre, kbd { font-family: var(--font-mono); }
 .card:hover::after { opacity: 1; }
 .card[hidden] { display: none; }
 
-.card--featured { border-color: color-mix(in srgb, var(--red) 55%, var(--line)); }
+.card--featured { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
 .card--featured::before { transform: scaleX(1); }
 
 .card-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 14px; }
