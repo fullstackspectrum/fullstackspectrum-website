@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Which base image should you use? Introducing Basely — Full-Stack-Spectrum</title>
+  <meta name="description" content="Basely compares each FROM in a Dockerfile with slim, hardened, Chainguard and newer images on vulnerabilities, size and fit, then tells you which one to switch to and what would break.">
+  <meta name="theme-color" content="#0a0d12">
+  <link rel="canonical" href="https://fullstackspectrum.com/blog/basely-base-images.html">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Full-Stack-Spectrum home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Full-Stack-Spectrum</span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5h14M2 13h14"/></svg>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="/#projects">projects</a>
+      <a href="/#about">about</a>
+      <a href="/blog/" aria-current="page">blog</a>
+      <a href="/#contact">contact</a>
+      <a class="nav-gh" href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="article">
+    <div class="wrap">
+      <a class="article-back" href="/blog/">← all posts</a>
+      <div class="spectrum spectrum--sm" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="article-meta"><time datetime="2026-11-17">17 Nov 2026</time><span>4 min read</span></div>
+      <h1>Which base image should you use? Introducing Basely</h1>
+      <div class="article-body">
+        <p>Every Dockerfile starts with a decision most people make once and never revisit: the <code>FROM</code> line. Somebody picked <code>python:3.12</code> two years ago because it was the first result, and it's been shipping 400 MB of compilers, headers and libraries into production ever since. Meanwhile there's a slim variant, an Alpine one, Docker Hardened Images, Chainguard images and a newer Python, and nobody has the afternoon it takes to compare them properly. <a href="https://github.com/fullstackspectrum/basely">Basely</a> does that comparison for you.</p>
+
+        <h2>Fewer CVEs isn't the whole answer</h2>
+        <p>Comparing base images on vulnerability counts alone gives you the wrong answer surprisingly often. A distroless image with no shell will score brilliantly, then break the first <code>RUN pip install</code> in your build stage. An Alpine image swaps glibc for musl, and the native wheels your app depends on stop loading. Chainguard's free tier only tracks <code>latest</code>, which today means Python 3.15, not the 3.12 you asked for.</p>
+        <p>So Basely reads the Dockerfile as well as the images. A stage with <code>RUN</code> steps needs a shell, and if those steps call <code>apt-get</code>, it needs a Debian or Ubuntu base. The final stage, the one you ship, is better off with no shell or package manager at all. Every candidate gets a verdict for the stage it would replace:</p>
+        <ul>
+          <li><strong>drop-in:</strong> nothing in the stage should break.</li>
+          <li><strong>minor changes:</strong> it works, but something differs: musl, a newer runtime, a non-root user, a missing platform.</li>
+          <li><strong>needs changes:</strong> it would break the stage as written.</li>
+        </ul>
+        <p>The recommendation is always the best image that won't break the stage. If something that needs more work at least halves the risk, Basely offers it as well, marked as worth the changes.</p>
+
+        <h2>What it found</h2>
+        <p>I pointed it at a typical two-stage Python Dockerfile: a <code>python:3.12</code> build stage and a <code>python:3.12-slim</code> final stage. On the day I ran it, the full <code>python:3.12</code> image carried 177 critical and high advisories in 412 MB. Its slim sibling had 29 in 43 MB. <code>dhi.io/python:3.12</code>, Docker's hardened image, had 7 in 23 MB, runs as a non-root user and ships no shell. Basely recommended that for the final stage, and its <code>-dev</code> variant for the build stage, so the two line up.</p>
+        <p>A few things surprised me while building it:</p>
+        <ul>
+          <li><code>dhi.io/python:3.12-alpine</code> had zero advisories in its OS packages, while the official <code>python:3.12-alpine</code> had 16, every one already fixed in Alpine. Same Alpine release, but one had picked up the new <code>krb5</code> and <code>zlib</code> and the other hadn't been rebuilt yet.</li>
+          <li><code>node:22</code> looked like it had 657 advisories with fixes waiting. 615 of them were kernel advisories, pulled in through <code>linux-libc-dev</code>. A container runs on the host's kernel, so none of them apply. Basely leaves them out now.</li>
+          <li>The official Python images ship a <code>pip</code> with six CVEs of its own. It's easy to miss when you only count OS packages.</li>
+        </ul>
+        <blockquote>The best base image is the one with the fewest problems that still builds your app.</blockquote>
+
+        <h2>Where the numbers come from</h2>
+        <p>Basely never pulls an image. It reads manifests and package databases straight from the registry, using your existing <code>docker login</code>, and streams each layer past without writing it to disk. Every package is looked up in <a href="https://osv.dev">OSV</a>: OS packages against the distro's own advisory feed, so backported fixes count as fixed, and the language packages the image ships (pip, npm, Go modules, Maven JARs, gems) against theirs.</p>
+        <p>It also leaves out the noise. Advisories the distro marks as unimportant are dropped, along with kernel advisories, and so is anything a vendor has ruled out with VEX. Docker attaches OpenVEX statements to its hardened images, and Basely applies them: on <code>dhi.io/python:3.12</code> that removed 49 advisories Docker had already assessed as not affecting the image. If your team keeps its own VEX, pass it with <code>--vex</code>.</p>
+
+        <h2>Try it</h2>
+        <p>Install it from PyPI or Homebrew, or run the container image:</p>
+<pre><code>pipx install basely
+brew install fullstackspectrum/basely/basely
+docker run --rm -t -v "$PWD:/data" fullstackspectrum/basely advise</code></pre>
+        <p>Then run it next to a Dockerfile, or point it at an image or two:</p>
+<pre><code>basely advise
+basely advise --image node:22
+basely compare python:3.12 python:3.12-slim dhi.io/python:3.12</code></pre>
+        <p>Each stage gets a comparison table and the recommendation as a <code>FROM</code> diff you can paste straight in. Like <a href="/blog/vulnly-offline-reports.html">Vulnly</a> and <a href="/blog/sbomly-sbom-diffs.html">Sbomly</a>, it also writes a self-contained HTML report that works offline, plus Markdown for a PR comment and JSON for other tools. Basely has no runtime dependencies and needs Python 3.10 or later; use 3.14 to read the zstd-compressed layers Docker Hardened Images use.</p>
+
+        <h2>Keeping it honest in CI</h2>
+        <p><code>--fail-on</code> turns the advice into a gate. Fail when the shipped image runs as root, carries a critical advisory, or when Basely would recommend something better:</p>
+<pre><code>basely advise --fail-on root,critical,better</code></pre>
+        <p>On GitHub it ships as a composite action that writes the advice to the job page:</p>
+<pre><code>- uses: fullstackspectrum/basely@v1
+  with:
+    dockerfile: Dockerfile
+    fail-on: critical,root</code></pre>
+
+        <h2>Feedback</h2>
+        <p>The catalogue covers Python, Node.js, Go and Java images, and Debian, Ubuntu and Alpine bases, from Docker Official Images, Docker Hardened Images and Chainguard. If your base image isn't covered, or Basely recommends something that breaks your build, <a href="https://github.com/fullstackspectrum/basely/issues">open an issue</a> with the Dockerfile. Those are exactly the cases that make the fit checks better.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span data-year></span> Full-Stack-Spectrum</p>
+    <div class="footer-links">
+      <a href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">github</a>
+      <a href="/blog/">blog</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/posts.js"></script>
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
