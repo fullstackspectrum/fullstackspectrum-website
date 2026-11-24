@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Full-Stack-Spectrum — Open-source security &amp; developer tooling</title>
-  <meta name="description" content="Full-Stack-Spectrum builds open-source security and developer tooling: Basely, Sbomly, GitPulse, Forgely, Vulnly, Assay and Policy Insights.">
+  <meta name="description" content="Full-Stack-Spectrum builds open-source security and developer tooling: Lockly, Basely, Sbomly, GitPulse, Forgely, Vulnly, Assay and Policy Insights.">
   <meta name="theme-color" content="#0a0d12">
   <link rel="canonical" href="https://fullstackspectrum.com/">
   <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
@@ -100,8 +100,8 @@
 
   <div class="ticker" aria-hidden="true">
     <div class="ticker-track">
-      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>SBOM diffs</span><span>base image advice</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
-      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>SBOM diffs</span><span>base image advice</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
+      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>SBOM diffs</span><span>lockfile reviews</span><span>base image advice</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
+      <span>CVE triage</span><span>SBOM &amp; SCA</span><span>SBOM diffs</span><span>lockfile reviews</span><span>base image advice</span><span>blast-radius mapping</span><span>offline HTML reports</span><span>GitHub traffic analytics</span><span>policy decision logs</span><span>Trivy · Grype · Snyk</span><span>OSV data</span><span>Docker · Homebrew · PyPI</span>
     </div>
   </div>
 
@@ -124,9 +124,21 @@
 
       <div class="projects">
 
-        <article class="card card--featured reveal" data-tags="security" data-repo="basely">
+        <article class="card card--featured reveal" data-tags="security" data-repo="lockly">
           <div class="card-top">
             <div class="card-tags"><span class="tag tag--new">NEW</span><span class="tag">Python</span><span class="tag">zero deps</span></div>
+            <span class="stars" data-stars></span>
+          </div>
+          <h3><a href="https://github.com/fullstackspectrum/lockly" target="_blank" rel="noopener">Lockly</a></h3>
+          <p class="card-kicker">lockfile reviews</p>
+          <p class="card-desc">Explain lockfile changes and flag what deserves review: install scripts, new publishers, lost provenance, days-old releases and known vulnerabilities. Eight ecosystems, one PR comment.</p>
+          <div class="install"><span class="prompt">$</span><code>pipx install lockly</code><button class="copy" type="button">copy</button></div>
+          <div class="card-links"><a href="https://github.com/fullstackspectrum/lockly" target="_blank" rel="noopener">source ↗</a><a href="https://pypi.org/project/lockly/" target="_blank" rel="noopener">pypi ↗</a><a href="https://hub.docker.com/r/fullstackspectrum/lockly" target="_blank" rel="noopener">docker hub ↗</a></div>
+        </article>
+
+        <article class="card reveal" data-tags="security" data-repo="basely">
+          <div class="card-top">
+            <div class="card-tags"><span class="tag">Python</span><span class="tag">zero deps</span></div>
             <span class="stars" data-stars></span>
           </div>
           <h3><a href="https://github.com/fullstackspectrum/basely" target="_blank" rel="noopener">Basely</a></h3>
