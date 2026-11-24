@@ -357,3 +357,9 @@ code, pre, kbd { font-family: var(--font-mono); }
   .reveal { opacity: 1; transform: none; }
   html { scroll-behavior: auto; }
 }
+.article-body figure { margin: 28px 0; }
+.article-body figure img { display: block; width: 100%; height: auto; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-elev); }
+.article-body figcaption { margin-top: 10px; font-family: "JetBrains Mono", ui-monospace, monospace; font-size: 13px; color: var(--text-faint); }
+.article-body figure a { border-bottom: 0; }
+.article-body figure.wide { width: min(1100px, calc(100vw - 2 * var(--gutter))); margin-left: 50%; transform: translateX(-50%); }
+.article-body figure.wide figcaption { text-align: center; }

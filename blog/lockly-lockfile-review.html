@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nobody reviews the lockfile. Introducing Lockly — Full-Stack-Spectrum</title>
+  <meta name="description" content="Lockly reads the lockfile before and after a change and flags what a reviewer should stop for: new install scripts, new publishers, lost provenance, days-old releases and known vulnerabilities.">
+  <meta name="theme-color" content="#0a0d12">
+  <link rel="canonical" href="https://fullstackspectrum.com/blog/lockly-lockfile-review.html">
+  <link rel="icon" href="/assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a class="brand" href="/" aria-label="Full-Stack-Spectrum home">
+      <span class="brand-mark" aria-hidden="true"></span>
+      <span>Full-Stack-Spectrum</span>
+    </a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="nav">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 5h14M2 13h14"/></svg>
+    </button>
+    <nav class="nav" id="nav">
+      <a href="/#projects">projects</a>
+      <a href="/#about">about</a>
+      <a href="/blog/" aria-current="page">blog</a>
+      <a href="/#contact">contact</a>
+      <a class="nav-gh" href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        GitHub
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <article class="article">
+    <div class="wrap">
+      <a class="article-back" href="/blog/">← all posts</a>
+      <div class="spectrum spectrum--sm" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+      <div class="article-meta"><time datetime="2026-11-24">24 Nov 2026</time><span>5 min read</span></div>
+      <h1>Nobody reviews the lockfile. Introducing Lockly</h1>
+      <div class="article-body">
+        <p>A dependency bump changes three lines of <code>package.json</code> and four thousand lines of <code>package-lock.json</code>. GitHub collapses the second file by default, the reviewer approves the first, and whatever changed in the other 3,997 lines ships. That's where supply chain attacks live: an install script that wasn't there yesterday, a release from an account that has never published the package before, a version that's two days old. <a href="https://github.com/fullstackspectrum/lockly">Lockly</a> reads the part nobody reads.</p>
+
+        <h2>What's worth stopping for</h2>
+        <p>Most lockfile churn is noise, and a tool that flags everything gets ignored as quickly as the lockfile does. So Lockly lists every change but only raises the ones a reviewer should actually look at:</p>
+        <ul>
+          <li><strong>Install scripts:</strong> a package that now runs code when it's installed, the most common route for npm malware.</li>
+          <li><strong>A new publisher:</strong> a release published by an account new to the package, or no longer through trusted publishing. That's what an account takeover looks like.</li>
+          <li><strong>Lost provenance:</strong> the release before had a provenance attestation, this one doesn't.</li>
+          <li><strong>Fresh releases and packages:</strong> a version published in the last few days, or a package that's only weeks old. Most malicious releases are caught and pulled within days, so a short wait is a cheap defence.</li>
+          <li><strong>Changed contents or sources:</strong> the same version with a different hash, or a package suddenly coming from git, a URL or another registry.</li>
+          <li><strong>Known vulnerabilities</strong> in the new versions, from <a href="https://osv.dev">OSV</a>, and the ones the change fixes.</li>
+          <li><strong>Deprecations, yanks and licence changes</strong>, including new copyleft terms.</li>
+        </ul>
+        <p>It reads npm, Yarn (classic and Berry), pnpm, uv, Poetry, Pipenv, Go modules and Cargo lockfiles, and tells direct dependencies from transitive ones wherever the lockfile or its manifest says.</p>
+
+        <h2>What a review looks like</h2>
+        <p>Here's an Express app moving from 4.17.1 to 4.21.0, with Lodash bumped and esbuild added. The lockfile diff is 67 package changes. Lockly turns it into five findings:</p>
+        <figure class="wide">
+          <a href="/assets/img/blog/lockly-terminal.png"><img src="/assets/img/blog/lockly-terminal.png" alt="Terminal output of lockly diff --base origin/main: 44 added, 23 upgraded, 5 findings to review, including an install script on esbuild, new publishers on body-parser and send, and two vulnerable packages" width="1240" height="460" loading="lazy"></a>
+          <figcaption>lockly diff --base origin/main, against real registry and OSV data</figcaption>
+        </figure>
+        <p>The two publisher findings are a good example of what Lockly does and doesn't claim. <code>body-parser</code> 1.20.3 was published in September 2024 by <code>ulisesgascon</code>; 1.20.2, and almost every release before it, came from <code>dougwilson</code>. Both are listed maintainers of the package, so this one checks out. A flag isn't a verdict. It's the thirty seconds of checking a reviewer should spend before merging, and it's exactly the signal that would have looked identical in an account takeover.</p>
+        <blockquote>A flag isn't a verdict. It's the thirty seconds of checking you'd want before merging.</blockquote>
+        <p>That's also why Lockly compares a release with <strong>the release just before it in the registry</strong>, not with whatever version you were on. If you jump three versions, a maintainer taking their turn in between isn't news; an account the package has never seen before is. Moving to trusted publishing is shown as information, since it's an improvement.</p>
+
+        <h2>The HTML report</h2>
+        <p>The terminal output is for you. For everyone else there's Markdown for a pull request comment, JSON for other tools, and a self-contained HTML report that works offline, like <a href="/blog/vulnly-offline-reports.html">Vulnly</a>'s and <a href="/blog/sbomly-sbom-diffs.html">Sbomly</a>'s:</p>
+        <figure>
+          <a href="/assets/img/blog/lockly-report.png"><img src="/assets/img/blog/lockly-report.png" alt="Lockly HTML report for package-lock.json: summary tiles for 44 added, 23 upgraded, 5 findings and 9 vulnerabilities fixed, and the five findings as cards" width="900" height="1025" loading="lazy"></a>
+          <figcaption>The HTML report: findings first, then every change in a searchable table</figcaption>
+        </figure>
+
+        <h2>Pointing it at real repositories</h2>
+        <p>Before release I ran it over the lockfile history of a few projects, mine and other people's:</p>
+        <ul>
+          <li><strong>Excalidraw</strong>, six months of <code>yarn.lock</code> changes: 4 packages added, 118 removed, 1 upgraded, and a single finding, the <code>fsevents</code> install script that macOS file watching has always needed. A well-run repository should look like this, and Lockly should stay quiet about it.</li>
+          <li><strong>My VS Code extension</strong>, from its first lockfile to today: 34 upgrades fixed 10 known vulnerabilities and left 10 more in place, and 180 packages had switched to a private registry mirror. That one was deliberate, but it's exactly the kind of change a reviewer seeing it cold should ask about.</li>
+          <li><strong>A small Vite app of mine:</strong> 58 packages added, and the <code>vite</code> version it locked had five advisories, one of them high, by the time I looked.</li>
+        </ul>
+
+        <h2>On every pull request</h2>
+        <p>The point is to see this at review time, so Lockly ships as a GitHub Action. It compares the pull request with its base, posts the review as a single comment, and edits that comment on every push instead of adding new ones:</p>
+<pre><code>- uses: actions/checkout@v4
+- uses: fullstackspectrum/lockly@v0
+  with:
+    fail-on: install-script,publisher,hash</code></pre>
+        <p><code>--fail-on</code> turns any finding type into a gate. Start with the ones that should never slip through unnoticed (a new install script, a new publisher, a changed hash) and tighten from there.</p>
+
+        <h2>Where the data comes from</h2>
+        <p>Lockly has no runtime dependencies. Everything it can tell from the lockfile alone, it does: hashes, sources, install scripts and licences where npm records them, and release dates where uv does. For the rest it looks up only the packages that changed in the npm registry, PyPI, crates.io, the Go module proxy and OSV, caches the answers for a day, and gives up on a slow request after five seconds. If a lookup fails, the review still runs and says what it couldn't check. <code>--offline</code> makes no requests at all.</p>
+
+        <h2>Try it</h2>
+<pre><code>pipx install lockly
+brew install fullstackspectrum/lockly/lockly
+docker run --rm -t -v "$PWD:/data" fullstackspectrum/lockly diff old/package-lock.json package-lock.json</code></pre>
+        <p>Then, on any branch:</p>
+<pre><code>lockly diff --base origin/main
+lockly diff --base origin/main --html report.html --markdown comment.md</code></pre>
+        <p>It compares against the merge base, as a pull request does, and reads lockfiles you haven't committed yet.</p>
+
+        <h2>Feedback</h2>
+        <p>This is 0.1.0, and I'd rather tune the signals with real lockfiles than guess. If Lockly flags something that isn't worth a look, misses something that is, or can't read your lockfile, <a href="https://github.com/fullstackspectrum/lockly/issues">open an issue</a>. Those are exactly the cases that make it better.</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p>© <span data-year></span> Full-Stack-Spectrum</p>
+    <div class="footer-links">
+      <a href="https://github.com/fullstackspectrum" target="_blank" rel="noopener">github</a>
+      <a href="/blog/">blog</a>
+    </div>
+  </div>
+</footer>
+
+<script src="/assets/js/posts.js"></script>
+<script src="/assets/js/main.js"></script>
+</body>
+</html>
