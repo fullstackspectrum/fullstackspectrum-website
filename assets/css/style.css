@@ -154,25 +154,14 @@ code, pre, kbd { font-family: var(--font-mono); }
 .btn .arrow { transition: transform .15s; }
 .btn:hover .arrow { transform: translateX(3px); }
 
-.hero-graph { width: 100%; max-width: 480px; justify-self: end; }
-.hero-graph .edge { stroke: #2c3646; stroke-width: 2; }
-.hero-graph .edge--hot { stroke: var(--red); stroke-width: 2.5; }
-.hero-graph .pulse {
-  stroke-dasharray: 6 200; stroke-dashoffset: 0; stroke-width: 3; stroke-linecap: round;
-  animation: travel 3.2s linear infinite;
-}
-@keyframes travel { to { stroke-dashoffset: -206; } }
-.hero-graph .ring { fill: none; stroke: var(--red); opacity: .55; }
-.hero-graph .ring--dash { stroke-dasharray: 4 6; opacity: .3; animation: spin 40s linear infinite; transform-origin: 380px 200px; }
-@keyframes spin { to { transform: rotate(360deg); } }
-.hero-graph .node { transition: transform .3s; transform-box: fill-box; transform-origin: center; }
-.hero-graph .node:hover { transform: scale(1.3); }
-.hero-graph .core { animation: corePulse 2.4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-@keyframes corePulse { 50% { transform: scale(1.08); } }
+/* Hero terminal: the site's .terminal, sized for the longest run so the page
+   never shifts as main.js types and prints each tool's output. */
+.terminal.hero-term { width: 100%; max-width: 500px; justify-self: end; font-size: 12.5px; }
+.hero-term pre { height: calc(10 * 1.75em + 36px); overflow: hidden; }
 
 @media (max-width: 900px) {
   .hero .wrap { grid-template-columns: 1fr; }
-  .hero-graph { justify-self: start; max-width: 420px; order: -1; margin-bottom: -8px; }
+  .terminal.hero-term { justify-self: stretch; max-width: none; }
 }
 
 /* Ticker ---------------------------------------------------------------- */
@@ -286,6 +275,8 @@ code, pre, kbd { font-family: var(--font-mono); }
 .terminal .c-v { color: var(--text); }
 .terminal .c-y { color: var(--yellow); }
 .terminal .c-o { color: var(--orange); }
+.terminal .c-f { color: var(--text-faint); }
+.terminal .c-b { color: var(--blue); }
 
 @media (max-width: 860px) { .about-grid { grid-template-columns: 1fr; gap: 32px; } }
 
@@ -363,3 +354,5 @@ code, pre, kbd { font-family: var(--font-mono); }
 .article-body figure a { border-bottom: 0; }
 .article-body figure.wide { width: min(1100px, calc(100vw - 2 * var(--gutter))); margin-left: 50%; transform: translateX(-50%); }
 .article-body figure.wide figcaption { text-align: center; }
+
+@media (max-width: 480px) { .terminal.hero-term { font-size: 11.5px; } }
