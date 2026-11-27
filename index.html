@@ -60,41 +60,18 @@
         </div>
       </div>
 
-      <svg class="hero-graph" viewBox="0 0 480 400" role="img" aria-label="Dependency graph illustration">
-        <circle class="ring ring--dash" cx="380" cy="200" r="82"/>
-        <circle class="ring" cx="380" cy="200" r="50"/>
+      <div class="terminal hero-term" role="img" aria-label="A terminal running Full-Stack-Spectrum tools in turn: Lockly flags an install script on esbuild 0.24.0, Basely suggests python:3.12-slim, Sbomly flags a changed hash on axios 1.6.0, and Vulnly reports 2911 vulnerabilities in python:3.12.">
+        <div class="terminal-bar" aria-hidden="true"><i></i><i></i><i></i><span>~/projects/api</span></div>
+        <pre data-hero-term aria-hidden="true"><span class="c-p">$</span> <span class="c-v">lockly diff --base origin/main</span>
 
-        <!-- edges -->
-        <line class="edge" x1="52" y1="200" x2="170" y2="72"/>
-        <line class="edge" x1="52" y1="200" x2="170" y2="328"/>
-        <line class="edge" x1="170" y1="72" x2="330" y2="26"/>
-        <line class="edge" x1="170" y1="72" x2="330" y2="118"/>
-        <line class="edge" x1="330" y1="118" x2="380" y2="200"/>
-        <line class="edge" x1="170" y1="328" x2="368" y2="282"/>
-        <line class="edge" x1="170" y1="328" x2="350" y2="374"/>
-        <line class="edge edge--hot" x1="52" y1="200" x2="380" y2="200"/>
-        <line class="edge edge--hot" x1="380" y1="200" x2="460" y2="148"/>
-        <line class="edge edge--hot" x1="380" y1="200" x2="460" y2="262"/>
-        <line class="edge edge--hot" x1="380" y1="200" x2="368" y2="282"/>
-
-        <!-- travelling pulses -->
-        <path class="pulse" d="M52 200 L380 200" stroke="#fff" fill="none"/>
-        <path class="pulse" d="M52 200 L170 72 L330 118" stroke="#8fb4ff" fill="none" style="animation-delay:-1.4s"/>
-        <path class="pulse" d="M52 200 L170 328 L368 282" stroke="#ff8a3d" fill="none" style="animation-delay:-2.2s"/>
-
-        <!-- nodes -->
-        <g class="node"><rect x="30" y="178" width="44" height="44" rx="8" fill="#0a0d12" stroke="#eef1f6" stroke-width="3"/><rect x="44" y="192" width="16" height="16" rx="2" fill="#eef1f6"/></g>
-        <circle class="node" cx="170" cy="72" r="14" fill="#4f8cff"/>
-        <circle class="node" cx="170" cy="200" r="14" fill="#ff8a3d"/>
-        <circle class="node" cx="170" cy="328" r="14" fill="#4f8cff"/>
-        <circle class="node" cx="330" cy="26" r="10" fill="#8fb4ff"/>
-        <circle class="node" cx="330" cy="118" r="10" fill="#f5c84c"/>
-        <circle class="node" cx="368" cy="282" r="10" fill="#ff8a3d"/>
-        <circle class="node" cx="350" cy="374" r="10" fill="#8fb4ff"/>
-        <circle class="node" cx="460" cy="148" r="10" fill="#ff8a3d"/>
-        <circle class="node" cx="460" cy="262" r="10" fill="#ff8a3d"/>
-        <rect class="core" x="360" y="180" width="40" height="40" rx="4" fill="#ff4d5e"/>
-      </svg>
+44 added, 23 upgraded. <span class="c-v">5 findings to review.</span>
+<span class="c-p">install script</span>  <span class="c-v">esbuild</span> <span class="c-f">0.24.0</span>
+<span class="c-p">publisher</span>       <span class="c-v">body-parser</span> <span class="c-f">1.20.3</span>
+<span class="c-p">publisher</span>       <span class="c-v">send</span> <span class="c-f">0.19.0</span>
+<span class="c-o">vulnerable</span>      <span class="c-v">esbuild</span> <span class="c-f">0.24.0</span>
+<span class="c-o">vulnerable</span>      <span class="c-v">qs</span> <span class="c-f">6.13.0</span>
+<span class="c-p">$</span> <span class="cursor"></span></pre>
+      </div>
     </div>
   </section>
 
